@@ -118,7 +118,7 @@ describe("hyperdrive commands", () => {
 
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -155,7 +155,7 @@ describe("hyperdrive commands", () => {
 
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your wrangler.toml file:
 
 			[[hyperdrive]]
@@ -186,7 +186,42 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
+
+			{
+			  \\"hyperdrive\\": [
+			    {
+			      \\"binding\\": \\"HYPERDRIVE\\",
+			      \\"id\\": \\"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\\"
+			    }
+			  ]
+			}"
+		`);
+	});
+
+	it("should handle creating a hyperdrive config for postgres without a port specified", async () => {
+		const reqProm = mockHyperdriveCreate();
+		await runWrangler(
+			"hyperdrive create test123 --connection-string='mysql://test:password@example.com/neondb'"
+		);
+
+		await expect(reqProm).resolves.toMatchInlineSnapshot(`
+			Object {
+			  "name": "test123",
+			  "origin": Object {
+			    "database": "neondb",
+			    "host": "example.com",
+			    "password": "password",
+			    "port": 3306,
+			    "scheme": "mysql",
+			    "user": "test",
+			  },
+			}
+		`);
+		expect(std.out).toMatchInlineSnapshot(`
+			"🚧 Creating 'test123'
+			✅ Created new Hyperdrive MySQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -225,7 +260,7 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -260,7 +295,7 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -295,7 +330,7 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -330,7 +365,7 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -365,7 +400,7 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -400,7 +435,42 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
+
+			{
+			  \\"hyperdrive\\": [
+			    {
+			      \\"binding\\": \\"HYPERDRIVE\\",
+			      \\"id\\": \\"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\\"
+			    }
+			  ]
+			}"
+		`);
+	});
+
+	it("should create a hyperdrive config given individual params instead of a connection string", async () => {
+		const reqProm = mockHyperdriveCreate();
+		await runWrangler(
+			"hyperdrive create test123 --host=example.com --database=neondb --user=test --password=password --port=1234 --origin-scheme=mysql"
+		);
+
+		await expect(reqProm).resolves.toMatchInlineSnapshot(`
+			Object {
+			  "name": "test123",
+			  "origin": Object {
+			    "database": "neondb",
+			    "host": "example.com",
+			    "password": "password",
+			    "port": 1234,
+			    "scheme": "mysql",
+			    "user": "test",
+			  },
+			}
+		`);
+		expect(std.out).toMatchInlineSnapshot(`
+			"🚧 Creating 'test123'
+			✅ Created new Hyperdrive MySQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -422,6 +492,21 @@ describe("hyperdrive commands", () => {
 		).rejects.toThrow();
 		expect(std.err).toMatchInlineSnapshot(`
 			"[31mX [41;31m[[41;97mERROR[41;31m][0m [1mYou must provide an origin hostname for the database[0m
+
+			"
+		`);
+	});
+
+	it("should reject a create hyperdrive command if an unexpected origin-scheme is provided", async () => {
+		await expect(() =>
+			runWrangler(
+				"hyperdrive create test123 --host=example.com --port=5432 --database=foo --user=test --password=foo  --origin-scheme=mongodb"
+			)
+		).rejects.toThrow();
+		expect(std.err).toMatchInlineSnapshot(`
+			"[31mX [41;31m[[41;97mERROR[41;31m][0m [1mInvalid values:[0m
+
+			    Argument: origin-scheme, Given: \\"mongodb\\", Choices: \\"postgres\\", \\"postgresql\\", \\"mysql\\"
 
 			"
 		`);
@@ -461,7 +546,7 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -496,7 +581,7 @@ describe("hyperdrive commands", () => {
 		`);
 		expect(std.out).toMatchInlineSnapshot(`
 			"🚧 Creating 'test123'
-			✅ Created new Hyperdrive config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+			✅ Created new Hyperdrive PostgreSQL config: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 			📋 To start using your config from a Worker, add the following binding configuration to your Wrangler configuration file:
 
 			{
@@ -543,13 +628,13 @@ describe("hyperdrive commands", () => {
 		await runWrangler("hyperdrive list");
 		expect(std.out).toMatchInlineSnapshot(`
 			"📋 Listing Hyperdrive configs
-			┌──────────────────────────────────────┬─────────┬────────┬────────────────┬──────┬──────────┬───────────────────┐
-			│ id                                   │ name    │ user   │ host           │ port │ database │ caching           │
-			├──────────────────────────────────────┼─────────┼────────┼────────────────┼──────┼──────────┼───────────────────┤
-			│ xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx │ test123 │ test   │ example.com    │ 5432 │ neondb   │                   │
-			├──────────────────────────────────────┼─────────┼────────┼────────────────┼──────┼──────────┼───────────────────┤
-			│ yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy │ new-db  │ dbuser │ www.google.com │ 3211 │ mydb     │ {\\"disabled\\":true} │
-			└──────────────────────────────────────┴─────────┴────────┴────────────────┴──────┴──────────┴───────────────────┘"
+			┌──────────────────────────────────────┬─────────┬────────┬────────────────┬──────┬────────────┬──────────┬───────────────────┐
+			│ id                                   │ name    │ user   │ host           │ port │ scheme     │ database │ caching           │
+			├──────────────────────────────────────┼─────────┼────────┼────────────────┼──────┼────────────┼──────────┼───────────────────┤
+			│ xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx │ test123 │ test   │ example.com    │ 5432 │ PostgreSQL │ neondb   │                   │
+			├──────────────────────────────────────┼─────────┼────────┼────────────────┼──────┼────────────┼──────────┼───────────────────┤
+			│ yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy │ new-db  │ dbuser │ www.google.com │ 3211 │ PostgreSQL │ mydb     │ {\\"disabled\\":true} │
+			└──────────────────────────────────────┴─────────┴────────┴────────────────┴──────┴────────────┴──────────┴───────────────────┘"
 		`);
 	});
 
